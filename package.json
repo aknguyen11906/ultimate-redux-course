@@ -1,14 +1,18 @@
 {
   "name": "ultimate-redux-course",
   "version": "1.0.0",
-  "description": "",
+  "description": "This is the practice code for the course Ultimate Redux from Mosh",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "webpack-dev-server --config ./webpack.config.js"
   },
-  "author": "",
+  "author": "Khuong Nguyen",
   "license": "ISC",
   "dependencies": {
-    "redux": "4.0"
+    "redux": "4.0",
+    "webpack": "4.41.6",
+    "webpack-cli": "3.3.11",
+    "webpack-dev-server": "3.10.3"
   }
 }
