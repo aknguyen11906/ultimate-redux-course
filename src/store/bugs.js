@@ -1,43 +1,43 @@
-const BUG_ADDED = "bugAdded";
-const BUG_REMOVED = "bugRemoved";
-const BUG_RESOLVED = "bugResolved";
-
-//Action creator
-export function bugAdded(description) {
-  return {
-    type: BUG_ADDED,
-    payload: { description },
-  };
-}
-
-export function bugRemoved(bugId) {
-  return {
-    type: BUG_REMOVED,
-    payload: {
-      id: bugId,
-    },
-  };
-}
-
+import { createSlice, createSelector } from "@reduxjs/toolkit";
+// import { createSelector } from "reselect";
+// export const bugAdded = createAction("bugCreated");
+// export const bugRemoved = createAction("bugRemoved");
+// export const bugResolved = createAction("bugResolved");
 //Reducer
 let lastId = 0;
-export default function reducer(state = [], action) {
-  debugger;
-  switch (action.type) {
-    case "bugAdded": {
-      return [
-        ...state,
-        {
-          id: lastId + 1,
-          description: action.payload.description,
-          resolved: false,
-        },
-      ];
-    }
-    case "bugRemoved": {
-      return state.filter((bug) => bug.id !== action.payload.id);
-    }
-    default:
-      return state;
-  }
-}
+
+export const getUnresolveBugs = createSelector(
+  (state) => state.entities.bugs,
+  (bugs) => bugs.filter((bug) => !bug.resolved)
+);
+
+export const getBugsByAsignee = (assignee) =>
+  createSelector(
+    (state) => state.entities.bugs,
+    (bugs) => bugs.filter((bug) => bug.assignee === assignee)
+  );
+const slice = createSlice({
+  name: "bugs",
+  initialState: [],
+  reducers: {
+    bugAdded: (bugs, action) => {
+      bugs.push({
+        id: ++lastId,
+        description: action.payload.description,
+        resolved: false,
+        assignee: null,
+      });
+    },
+    bugResolved: (bugs, action) => {
+      const index = bugs.findIndex((bug) => bug.id === action.payload.id);
+      bugs[index].resolved = true;
+    },
+    bugAssign: (bugs, action) => {
+      const index = bugs.findIndex((bug) => bug.id === action.payload.bugId);
+      bugs[index].assignee = action.payload.assignee;
+    },
+  },
+});
+
+export const { bugAdded, bugRemoved, bugResolved, bugAssign } = slice.actions;
+export default slice.reducer;
